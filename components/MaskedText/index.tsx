@@ -25,9 +25,20 @@ const MaskedContent = React.forwardRef<Ref, MaskedContentProps>(
     const { introComplete } = useContext(ScrollPageContext);
 
     const mouseRef = useRef({ x: 0, y: 0 });
+    const mobileIntervalRef = useRef<NodeJS.Timeout | null>(null);
+    const interactionCountRef = useRef(0);
 
     const ww = global?.window?.innerWidth || 100;
     const fontSize = Math.round((ww / 1200) * 120);
+
+    // Check if device is mobile
+    const isMobile = () => {
+      return (
+        /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
+          navigator.userAgent
+        ) || window.innerWidth <= 768
+      );
+    };
 
     const onMouseMove = useCallback(
       (event: MouseEvent) => {
@@ -43,14 +54,54 @@ const MaskedContent = React.forwardRef<Ref, MaskedContentProps>(
       [introComplete]
     );
 
+    // Fake mouse movement for mobile
+    const simulateMouseMove = useCallback(() => {
+      if (!introComplete || !isMobile()) return;
+
+      const ww = global?.window?.innerWidth || 100;
+      const wh = global?.window?.innerHeight || 100;
+
+      // Increment interaction count
+      interactionCountRef.current += 1;
+
+      // Every other interaction, reset to center
+      if (interactionCountRef.current % 2 === 0) {
+        gsap.to(mouseRef.current, {
+          x: 0,
+          y: 0,
+          duration: 0.2,
+        });
+      } else {
+        // Generate random coordinates within the viewport
+        const randomX = (Math.random() - 0.5) * ww;
+        const randomY = (Math.random() - 0.5) * wh;
+
+        gsap.to(mouseRef.current, {
+          x: randomX,
+          y: randomY,
+          duration: 0.2,
+        });
+      }
+    }, [introComplete]);
+
     useEffect(() => {
       if (introComplete) {
         global?.window.addEventListener("mousemove", onMouseMove);
+
+        // Start mobile simulation if on mobile
+        if (isMobile()) {
+          mobileIntervalRef.current = setInterval(simulateMouseMove, 4000);
+        }
       }
+
       return () => {
         global?.window.removeEventListener("mousemove", onMouseMove);
+        if (mobileIntervalRef.current) {
+          clearInterval(mobileIntervalRef.current);
+          mobileIntervalRef.current = null;
+        }
       };
-    }, [introComplete, onMouseMove]);
+    }, [introComplete, onMouseMove, simulateMouseMove]);
 
     useFrame(() => {
       if (!introComplete) return;
