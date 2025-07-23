@@ -209,7 +209,8 @@ const MaskedText = ({ text, start, end }: MaskedTextProps) => {
   }, [introComplete]);
 
   const ww = global?.window?.innerWidth || 100;
-  const fontSize = Math.round((ww / 2000) * 30);
+  // Responsive font size: smaller on small screens, moderate on large screens
+  const fontSize = Math.round((ww / 1200) * 30);
 
   return (
     <group>
@@ -218,7 +219,7 @@ const MaskedText = ({ text, start, end }: MaskedTextProps) => {
       {introComplete && (
         <Text
           ref={textRef}
-          position={[0, -140, 0]}
+          position={[0, -(ww / 1200) * 90, 0]}
           font="/files/fonts/sohne-halbfett.ttf"
           fontSize={fontSize}
           color="lightgray"
