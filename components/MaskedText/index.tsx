@@ -165,8 +165,6 @@ const MaskedText = ({ text, start, end }: MaskedTextProps) => {
           outter={outter}
           index={r}
           key={key}
-          start={start}
-          end={end}
         />
       );
     });
