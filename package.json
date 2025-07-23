@@ -9,17 +9,26 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@react-three/drei": "^10.6.0",
+    "@react-three/fiber": "^9.2.0",
+    "classnames": "^2.5.1",
+    "framer-motion": "^12.23.7",
+    "gsap": "^3.13.0",
+    "lodash": "^4.17.21",
+    "next": "15.4.3",
     "react": "19.1.0",
     "react-dom": "19.1.0",
-    "next": "15.4.3"
+    "styled-components": "^6.1.19",
+    "three": "^0.178.0",
+    "troika-three-text": "^0.52.4"
   },
   "devDependencies": {
-    "typescript": "^5",
+    "@eslint/eslintrc": "^3",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "eslint": "^9",
     "eslint-config-next": "15.4.3",
-    "@eslint/eslintrc": "^3"
+    "typescript": "^5"
   }
 }
