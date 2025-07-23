@@ -1,14 +1,8 @@
-import React, {
-  useCallback,
-  useContext,
-  useEffect,
-  useRef,
-  useState,
-} from "react";
+import React, { useCallback, useContext, useEffect, useRef } from "react";
 import { Mask, useMask, Text } from "@react-three/drei";
 import * as THREE from "three";
 
-import { extend, useFrame } from "@react-three/fiber";
+import { useFrame } from "@react-three/fiber";
 import _ from "lodash";
 import gsap, { Expo } from "gsap";
 import { ScrollPageContext } from "@/components/ScrollingPage";
@@ -94,14 +88,7 @@ const MaskedContent = React.forwardRef<Ref, MaskedContentProps>(
 );
 MaskedContent.displayName = "MaskedContent";
 
-const MaskText = ({
-  text = "",
-  inner = 20,
-  outter = 80,
-  index = 0,
-  start = 0,
-  end = 0,
-}) => {
+const MaskText = ({ text = "", inner = 20, outter = 80, index = 0 }) => {
   const contentRef = useRef<THREE.Group>(null);
 
   useEffect(() => {
@@ -223,6 +210,9 @@ const MaskedText = ({ text, start, end }: MaskedTextProps) => {
     }
   }, [introComplete]);
 
+  const ww = global?.window?.innerWidth || 100;
+  const fontSize = Math.round((ww / 2000) * 30);
+
   return (
     <group>
       {renderRings()}
@@ -230,9 +220,9 @@ const MaskedText = ({ text, start, end }: MaskedTextProps) => {
       {introComplete && (
         <Text
           ref={textRef}
-          position={[0, -100, 0]}
+          position={[0, -140, 0]}
           font="/files/fonts/sohne-halbfett.ttf"
-          fontSize={20}
+          fontSize={fontSize}
           color="lightgray"
           onClick={() => {
             window.open("mailto:info@groupdynamics.net", "_blank");

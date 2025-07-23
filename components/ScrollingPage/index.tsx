@@ -1,18 +1,17 @@
-// import { useAnimationFrame, useInView, useScroll } from 'framer-motion';
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import React, { useEffect, useRef, useState } from "react";
 import ThreeCanvas from "../ThreeCanvas";
 import { Container } from "./styles";
 import MaskedText from "../MaskedText";
 import classNames from "classnames";
 import gsap from "gsap";
-import _ from "lodash";
 import ScrollToPlugin from "gsap/ScrollToPlugin";
 
 gsap.registerPlugin(ScrollToPlugin);
 
 export const ScrollPageContext = React.createContext({
   introComplete: false,
-  setIntroComplete: (isComplete: boolean) => {},
+  setIntroComplete: (value: boolean) => {},
 });
 
 const ScrollingPage = () => {

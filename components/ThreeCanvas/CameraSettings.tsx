@@ -1,6 +1,7 @@
-import React, { useRef, useEffect } from 'react';
-import { /* Canvas, */ useThree } from '@react-three/fiber';
-import useScreenSize from '@/hooks/useScreenSize';
+import React, { useRef, useEffect } from "react";
+import { /* Canvas, */ useThree } from "@react-three/fiber";
+import useScreenSize from "@/hooks/useScreenSize";
+import * as THREE from "three";
 
 const perspective = 2000;
 
@@ -12,7 +13,7 @@ export const threeSettings = {
   },
 };
 
-const CameraSettings = (props: any) => {
+const CameraSettings = () => {
   const cameraRef = useRef<THREE.PerspectiveCamera>(null!);
   const { set } = useThree();
   const { screenWidth: ww, screenHeight: wh } = useScreenSize();
@@ -34,7 +35,7 @@ const CameraSettings = (props: any) => {
     set({ camera: cameraRef.current });
   }, []);
 
-  return <perspectiveCamera ref={cameraRef} {...props} />;
+  return <perspectiveCamera ref={cameraRef} />;
   // return <orthographicCamera ref={cameraRef} {...props} />;
 };
 
