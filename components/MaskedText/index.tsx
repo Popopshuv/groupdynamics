@@ -72,13 +72,16 @@ const MaskedContent = React.forwardRef<Ref, MaskedContentProps>(
           duration: 0.2,
         });
       } else {
-        // Generate random coordinates within the viewport
-        const randomX = (Math.random() - 0.5) * ww;
-        const randomY = (Math.random() - 0.5) * wh;
+        // Alternate between left and right sides of the screen
+        const isLeftSide =
+          Math.floor(interactionCountRef.current / 2) % 2 === 0;
+        const targetX = isLeftSide ? -ww / 2.5 : ww / 2.5; // Move to left or right side
+        const targetY =
+          ((Math.floor(interactionCountRef.current / 2) % 3) - 1) * (wh / 6); // Uniform vertical pattern
 
         gsap.to(mouseRef.current, {
-          x: randomX,
-          y: randomY,
+          x: targetX,
+          y: targetY,
           duration: 0.2,
         });
       }
