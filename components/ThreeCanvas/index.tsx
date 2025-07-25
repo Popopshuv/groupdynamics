@@ -26,11 +26,10 @@ const ThreeCanvas = ({ children }: ThreeCanvasProps) => {
   return (
     <ThreeDiv>
       <Canvas
-        dpr={[dpr, dpr]}
-        ref={canvasRef}
-        flat
-        linear
-        gl={{ stencil: true }}
+        camera={{ position: [0, -1, 4], fov: 65 }}
+        gl={{
+          alpha: false,
+        }}
       >
         <CameraSettings />
         {children}
