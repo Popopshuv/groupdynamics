@@ -148,7 +148,7 @@ export default function Dither(): React.ReactElement {
             </group>
           </Center>
           <OrbitControls />
-          <EnvironmentWrapper intensity={1.5} highlight={"#066aff"} />
+          <EnvironmentWrapper intensity={1.5} highlight={"#000000"} />
           <Effects />
         </Canvas>
       </ThreeDiv>
