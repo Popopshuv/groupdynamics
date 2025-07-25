@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import React, { useEffect, useRef, useState } from "react";
-import ThreeCanvas from "../ThreeCanvas";
+import ThreeCanvas from "@/components/ThreeCanvas";
 import { Container } from "./styles";
 import MaskedText from "../MaskedText";
 import classNames from "classnames";

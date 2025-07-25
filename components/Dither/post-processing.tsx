@@ -1,7 +1,8 @@
-import { useEffect, useRef, useState, useCallback } from "react";
+import { useEffect, useRef, useState, useCallback, useMemo } from "react";
 import * as THREE from "three";
 import { useFrame } from "@react-three/fiber";
 import { EffectComposer, RenderPass, EffectPass } from "postprocessing";
+import { useControls } from "leva";
 
 import { DitheringEffect } from "./dithering-shader/DitheringEffect";
 
@@ -35,9 +36,17 @@ export const PostProcessing = () => {
   const [scene, setScene] = useState<THREE.Scene | null>(null);
   const [camera, setCamera] = useState<THREE.Camera | null>(null);
 
-  // Effect values (previously from Leva controls)
-  const pixelSizeRatio = 1;
-  const grayscaleOnly = true;
+  // Effect controls - hidden but still reactive
+  const { pixelSizeRatio, grayscaleOnly } = useControls({
+    pixelSizeRatio: {
+      value: 1,
+      min: 1,
+      max: 10,
+      step: 1,
+      label: "Pixelation Strength",
+    },
+    grayscaleOnly: { value: true, label: "Grayscale Only", hide: true },
+  });
 
   // Calculate dithering grid size based on mouse distance from center
   const calculateGridSize = useCallback(() => {
@@ -61,7 +70,7 @@ export const PostProcessing = () => {
     // Invert the behavior: more dithering when closer to center
     const invertedDistance = 1 - normalizedDistance;
     const minGridSize = 1;
-    return Math.max(minGridSize, Math.round(invertedDistance * 20)); // 1 to 20
+    return Math.max(minGridSize, Math.round(invertedDistance * 20)); // 1 to 10
   }, []);
 
   // Mouse movement handler

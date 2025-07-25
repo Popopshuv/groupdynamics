@@ -6,6 +6,7 @@ import { OrbitControls, Center, Float } from "@react-three/drei";
 import { PostProcessing, updateMouseState } from "./post-processing";
 import { EnvironmentWrapper } from "./environment";
 import * as THREE from "three";
+import { Leva } from "leva";
 
 import styled from "styled-components";
 
@@ -38,7 +39,7 @@ const Info = styled.div`
   }
 `;
 
-const DemoName: FC = () => (
+const SiteInfo: FC = () => (
   <Info>
     <p>group dynamics</p>
     <a href="mailto:info@groupdynamics.net">info@groupdynamics.net</a>
@@ -49,14 +50,34 @@ const DemoName: FC = () => (
  * Main application component
  */
 export default function Dither(): React.ReactElement {
-  // Scene values (previously from Leva controls)
-  const bgColor = "#ffffff";
-  const intensity = 1.5;
-  const highlight = "#066aff";
+  // const { bgColor } = useControls({
+  //   "Scene Settings": folder({
+  //     bgColor: {
+  //       value: "#ffffff",
+  //       label: "Background Color",
+  //     },
+  //   }),
+  // });
 
   const rendererRef = useRef<THREE.WebGLRenderer | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const [modelScale, setModelScale] = useState(3);
+
+  // const { intensity, highlight } = useControls({
+  //   "Environment Settings": folder({
+  //     intensity: {
+  //       value: 1.5,
+  //       min: 0,
+  //       max: 5,
+  //       step: 0.1,
+  //       label: "Environment Intensity",
+  //     },
+  //     highlight: {
+  //       value: "#066aff",
+  //       label: "Highlight Color",
+  //     },
+  //   }),
+  // });
 
   // Responsive adjustment handler for model scale
   const handleResize = useCallback(() => {
@@ -100,6 +121,7 @@ export default function Dither(): React.ReactElement {
 
   return (
     <>
+      <Leva hidden />
       <ThreeDiv
         ref={containerRef}
         onMouseEnter={handleMouseEnter}
@@ -113,7 +135,7 @@ export default function Dither(): React.ReactElement {
           }}
           onCreated={({ gl }) => {
             rendererRef.current = gl;
-            gl.setClearColor(new THREE.Color(bgColor));
+            gl.setClearColor(new THREE.Color("#ffffff"));
           }}
         >
           <Center>
@@ -122,11 +144,11 @@ export default function Dither(): React.ReactElement {
             </group>
           </Center>
           <OrbitControls />
-          <EnvironmentWrapper intensity={intensity} highlight={highlight} />
+          <EnvironmentWrapper intensity={1.5} highlight={"#066aff"} />
           <Effects />
         </Canvas>
       </ThreeDiv>
-      <DemoName />
+      <SiteInfo />
     </>
   );
 }

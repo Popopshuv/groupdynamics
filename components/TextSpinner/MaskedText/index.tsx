@@ -5,7 +5,7 @@ import * as THREE from "three";
 import { useFrame } from "@react-three/fiber";
 import _ from "lodash";
 import gsap, { Expo } from "gsap";
-import { ScrollPageContext } from "@/components/ScrollingPage";
+import { ScrollPageContext } from "@/components/TextSpinner/ScrollingPage";
 
 export type MaskedContentProps = {
   text: string;
@@ -19,7 +19,7 @@ type Ref = THREE.Group;
 const font = "/files/fonts/sohne-halbfett.ttf";
 
 const MaskedContent = React.forwardRef<Ref, MaskedContentProps>(
-  ({ text = "", index = 1, start = 0, end = 100 }, ref) => {
+  ({ text = "", index = 1 }, ref) => {
     const stencil = useMask(index + 1);
     const textRef = useRef<THREE.Object3D>(null);
     const { introComplete } = useContext(ScrollPageContext);
