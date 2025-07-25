@@ -121,7 +121,7 @@ export default function Dither(): React.ReactElement {
 
   return (
     <>
-      <Leva hidden />
+      <Leva />
       <ThreeDiv
         ref={containerRef}
         onMouseEnter={handleMouseEnter}
