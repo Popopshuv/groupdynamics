@@ -16,6 +16,12 @@ const ThreeDiv = styled.div`
   transform: translate(-50%, -50%);
   width: 60vw;
   height: 60vh;
+
+  @media (max-width: 768px) {
+    width: 90vw;
+    height: 90vh;
+  }
+
   canvas {
     width: 100%;
     height: 100%;
@@ -187,6 +193,7 @@ function TexturedPlane(): React.ReactElement {
         opacity={0.9}
         roughness={0.1}
         metalness={0.1}
+        side={THREE.DoubleSide}
       />
     </mesh>
   );
