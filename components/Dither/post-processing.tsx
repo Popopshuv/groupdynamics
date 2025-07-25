@@ -10,7 +10,14 @@ const globalMouseState = {
   isInCanvas: false,
   position: { x: 0, y: 0 },
   canvasBounds: { left: 0, top: 0, width: 0, height: 0 },
+  relativePosition: { x: 0, y: 0 }, // Position relative to canvas
 };
+
+// Expose to window for access from other components
+if (typeof window !== "undefined") {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  (window as any).globalMouseState = globalMouseState;
+}
 
 // Function to update global mouse state
 export const updateMouseState = (
@@ -20,7 +27,16 @@ export const updateMouseState = (
 ) => {
   globalMouseState.isInCanvas = isInCanvas;
   if (position) globalMouseState.position = position;
-  if (bounds) globalMouseState.canvasBounds = bounds;
+  if (bounds) {
+    globalMouseState.canvasBounds = bounds;
+    // Calculate relative position within canvas
+    if (position) {
+      globalMouseState.relativePosition = {
+        x: position.x - bounds.left,
+        y: position.y - bounds.top,
+      };
+    }
+  }
 };
 
 /**

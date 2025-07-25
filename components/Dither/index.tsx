@@ -1,10 +1,10 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable react/display-name */
-import { memo, FC, useEffect, useRef, useState, useCallback } from "react";
+import { FC, useEffect, useRef, useState, useCallback } from "react";
 import { Canvas } from "@react-three/fiber";
-import { OrbitControls, Center, Float } from "@react-three/drei";
-import { PostProcessing, updateMouseState } from "./post-processing";
-import { EnvironmentWrapper } from "./environment";
+import { OrbitControls, Center } from "@react-three/drei";
+
+import { EffectComposer, Pixelation } from "@react-three/postprocessing";
 import * as THREE from "three";
 
 import styled from "styled-components";
@@ -14,8 +14,8 @@ const ThreeDiv = styled.div`
   left: 50%;
   top: 50%;
   transform: translate(-50%, -50%);
-  width: 60vw;
-  height: 60vh;
+  width: 100vw;
+  height: 75vh;
 
   @media (max-width: 768px) {
     width: 90vw;
@@ -52,37 +52,64 @@ const SiteInfo: FC = () => (
 );
 
 /**
+ * Textured plane component using groupd-meta.png
+ */
+function TexturedPlane(): React.ReactElement | null {
+  const [texture, setTexture] = useState<THREE.Texture | null>(null);
+  const [imageAspectRatio, setImageAspectRatio] = useState(1);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const textureLoader = new THREE.TextureLoader();
+    textureLoader.load(
+      "/files/images/group-dynamics.png",
+      (loadedTexture) => {
+        setTexture(loadedTexture);
+        setIsLoading(false);
+
+        // Get the actual image dimensions
+        const image = loadedTexture.image;
+        if (image) {
+          const aspectRatio = image.width / image.height;
+          setImageAspectRatio(aspectRatio);
+        }
+      },
+      undefined, // onProgress
+      (error) => {
+        console.error("Error loading texture:", error);
+        setIsLoading(false);
+      }
+    );
+  }, []);
+
+  // Don't render anything while loading
+  if (isLoading || !texture) {
+    return null;
+  }
+
+  return (
+    <mesh castShadow>
+      <planeGeometry args={[imageAspectRatio, 1]} />
+      <meshStandardMaterial
+        map={texture}
+        transparent={true}
+        opacity={1}
+        side={THREE.DoubleSide}
+      />
+    </mesh>
+  );
+}
+
+/**
  * Main application component
  */
 export default function Dither(): React.ReactElement {
-  // const { bgColor } = useControls({
-  //   "Scene Settings": folder({
-  //     bgColor: {
-  //       value: "#ffffff",
-  //       label: "Background Color",
-  //     },
-  //   }),
-  // });
-
   const rendererRef = useRef<THREE.WebGLRenderer | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const [modelScale, setModelScale] = useState(3);
-
-  // const { intensity, highlight } = useControls({
-  //   "Environment Settings": folder({
-  //     intensity: {
-  //       value: 1.5,
-  //       min: 0,
-  //       max: 5,
-  //       step: 0.1,
-  //       label: "Environment Intensity",
-  //     },
-  //     highlight: {
-  //       value: "#066aff",
-  //       label: "Highlight Color",
-  //     },
-  //   }),
-  // });
+  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+  const [canvasBounds, setCanvasBounds] = useState({ width: 0, height: 0 });
+  const [pixelationGranularity, setPixelationGranularity] = useState(0);
 
   // Responsive adjustment handler for model scale
   const handleResize = useCallback(() => {
@@ -98,39 +125,78 @@ export default function Dither(): React.ReactElement {
     }
   }, []);
 
-  // Mouse enter/leave handlers
-  const handleMouseEnter = useCallback((event: React.MouseEvent) => {
-    // Update canvas bounds for post-processing
-    const rect = event.currentTarget.getBoundingClientRect();
-    updateMouseState(true, undefined, {
-      left: rect.left,
-      top: rect.top,
-      width: rect.width,
-      height: rect.height,
-    });
+  // Handle mouse movement
+  const handleMouseMove = useCallback((event: MouseEvent) => {
+    const canvas = document.querySelector("canvas");
+    if (canvas) {
+      const rect = canvas.getBoundingClientRect();
+      const x = event.clientX - rect.left;
+      const y = event.clientY - rect.top;
+      setMousePosition({ x, y });
+      setCanvasBounds({ width: rect.width, height: rect.height });
+    }
   }, []);
 
-  const handleMouseLeave = useCallback(() => {
-    updateMouseState(false);
-  }, []);
-
-  // Set up resize handling
+  // Handle window resize and mouse events
   useEffect(() => {
-    // Initial check
     handleResize();
-
-    // Add listener
     window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
-  }, [handleResize]);
+    window.addEventListener("mousemove", handleMouseMove);
+    return () => {
+      window.removeEventListener("resize", handleResize);
+      window.removeEventListener("mousemove", handleMouseMove);
+    };
+  }, [handleResize, handleMouseMove]);
+
+  // Calculate pixelation granularity based on mouse position
+  useEffect(() => {
+    if (canvasBounds.width === 0 || canvasBounds.height === 0) return;
+
+    const centerX = canvasBounds.width / 2;
+    const centerY = canvasBounds.height / 2;
+
+    // Define the inner area where pixelation can occur (50vw x 50vh)
+    const innerWidth = canvasBounds.width * 0.5; // 50vw
+    const innerHeight = canvasBounds.height * 0.5; // 50vh
+
+    // Calculate the bounds of the inner area
+    const innerLeft = centerX - innerWidth / 2;
+    const innerRight = centerX + innerWidth / 2;
+    const innerTop = centerY - innerHeight / 2;
+    const innerBottom = centerY + innerHeight / 2;
+
+    // Check if mouse is within the inner area
+    const isInInnerArea =
+      mousePosition.x >= innerLeft &&
+      mousePosition.x <= innerRight &&
+      mousePosition.y >= innerTop &&
+      mousePosition.y <= innerBottom;
+
+    if (!isInInnerArea) {
+      // Outside the inner area - no pixelation
+      setPixelationGranularity(0);
+      return;
+    }
+
+    // Calculate distance from center within the inner area
+    const distanceFromCenter = Math.sqrt(
+      Math.pow(mousePosition.x - centerX, 2) +
+        Math.pow(mousePosition.y - centerY, 2)
+    );
+
+    // Use the inner area radius as the max distance
+    const maxDistance = Math.sqrt(
+      Math.pow(innerWidth / 2, 2) + Math.pow(innerHeight / 2, 2)
+    );
+
+    const normalizedDistance = Math.min(distanceFromCenter / maxDistance, 1);
+    const newGranularity = (1 - normalizedDistance) * 100;
+    setPixelationGranularity(newGranularity);
+  }, [mousePosition, canvasBounds]);
 
   return (
     <>
-      <ThreeDiv
-        ref={containerRef}
-        onMouseEnter={handleMouseEnter}
-        onMouseLeave={handleMouseLeave}
-      >
+      <ThreeDiv ref={containerRef}>
         <Canvas
           shadows
           camera={{ position: [0, 0, 3], fov: 45 }}
@@ -142,6 +208,7 @@ export default function Dither(): React.ReactElement {
             gl.setClearColor(new THREE.Color("#ffffff"));
           }}
         >
+          <ambientLight intensity={1} />
           <Center>
             <group scale={modelScale}>
               <TexturedPlane />
@@ -154,53 +221,12 @@ export default function Dither(): React.ReactElement {
             maxAzimuthAngle={Math.PI / 4} // 45 degrees right
             enablePan={false}
           />
-          <EnvironmentWrapper intensity={1.5} highlight={"#000000"} />
-          <Effects />
+          <EffectComposer autoClear={false}>
+            <Pixelation granularity={pixelationGranularity} />
+          </EffectComposer>
         </Canvas>
       </ThreeDiv>
       <SiteInfo />
     </>
-  );
-}
-
-/**
- * Post-processing effects wrapper component
- * Memoized to prevent unnecessary re-renders
- */
-const Effects: FC = memo(() => <PostProcessing />);
-
-/**
- * Textured plane component using groupd-meta.png
- */
-function TexturedPlane(): React.ReactElement {
-  const [texture, setTexture] = useState<THREE.Texture | null>(null);
-  const [imageAspectRatio, setImageAspectRatio] = useState(1);
-
-  useEffect(() => {
-    const textureLoader = new THREE.TextureLoader();
-    textureLoader.load("/files/images/group-dynamics.png", (loadedTexture) => {
-      setTexture(loadedTexture);
-
-      // Get the actual image dimensions
-      const image = loadedTexture.image;
-      if (image) {
-        const aspectRatio = image.width / image.height;
-        setImageAspectRatio(aspectRatio);
-      }
-    });
-  }, []);
-
-  return (
-    <mesh castShadow>
-      <planeGeometry args={[imageAspectRatio, 1]} />
-      <meshStandardMaterial
-        map={texture}
-        transparent={true}
-        opacity={0.9}
-        roughness={0.1}
-        metalness={0.1}
-        side={THREE.DoubleSide}
-      />
-    </mesh>
   );
 }
