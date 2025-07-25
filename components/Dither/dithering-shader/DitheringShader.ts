@@ -1,12 +1,12 @@
 /**
  * Dithering shader implementation
  * Applies a dithering effect to the rendered scene
- * 
+ *
  * Credits:
  * Original dithering pattern: https://www.shadertoy.com/view/ltSSzW
  */
 
-const ditheringShader = /*glsl*/`
+const ditheringShader = /*glsl*/ `
 uniform float ditheringEnabled;
 uniform vec2 resolution;
 uniform float gridSize;
@@ -98,4 +98,4 @@ void mainImage(const in vec4 inputColor, const in vec2 uv, out vec4 outputColor)
   outputColor = vec4(baseColor, inputColor.a);
 }`;
 
-export default ditheringShader; 
+export default ditheringShader;

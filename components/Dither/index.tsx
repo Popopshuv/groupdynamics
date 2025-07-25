@@ -6,7 +6,6 @@ import { OrbitControls, Center, Float } from "@react-three/drei";
 import { PostProcessing, updateMouseState } from "./post-processing";
 import { EnvironmentWrapper } from "./environment";
 import * as THREE from "three";
-import { Leva } from "leva";
 
 import styled from "styled-components";
 
@@ -121,7 +120,6 @@ export default function Dither(): React.ReactElement {
 
   return (
     <>
-      <Leva />
       <ThreeDiv
         ref={containerRef}
         onMouseEnter={handleMouseEnter}

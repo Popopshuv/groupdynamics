@@ -1,8 +1,7 @@
 import { useEffect, useRef, useState, useCallback, useMemo } from "react";
 import * as THREE from "three";
-import { useFrame } from "@react-three/fiber";
+import { useFrame, useThree } from "@react-three/fiber";
 import { EffectComposer, RenderPass, EffectPass } from "postprocessing";
-import { useControls } from "leva";
 
 import { DitheringEffect } from "./dithering-shader/DitheringEffect";
 
@@ -32,21 +31,15 @@ export const PostProcessing = () => {
   // References
   const composerRef = useRef<EffectComposer | null>(null);
   const ditheringEffectRef = useRef<DitheringEffect | null>(null);
+  const { gl } = useThree();
 
   const [scene, setScene] = useState<THREE.Scene | null>(null);
   const [camera, setCamera] = useState<THREE.Camera | null>(null);
+  const [isInitialized, setIsInitialized] = useState(false);
 
-  // Effect controls - hidden but still reactive
-  const { pixelSizeRatio, grayscaleOnly } = useControls({
-    pixelSizeRatio: {
-      value: 1,
-      min: 1,
-      max: 10,
-      step: 1,
-      label: "Pixelation Strength",
-    },
-    grayscaleOnly: { value: true, label: "Grayscale Only", hide: true },
-  });
+  // Static effect values (removed Leva dependency)
+  const pixelSizeRatio = 1;
+  const grayscaleOnly = true;
 
   // Calculate dithering grid size based on mouse distance from center
   const calculateGridSize = useCallback(() => {
@@ -83,7 +76,17 @@ export const PostProcessing = () => {
   // Memoized resize handler
   const handleResize = useCallback(() => {
     if (composerRef.current) {
-      composerRef.current.setSize(window.innerWidth, window.innerHeight);
+      // Get the actual canvas element size
+      const canvas = document.querySelector("canvas");
+      if (canvas) {
+        const rect = canvas.getBoundingClientRect();
+        composerRef.current.setSize(rect.width, rect.height);
+      } else {
+        // Fallback to calculated size
+        const canvasWidth = window.innerWidth * 0.6;
+        const canvasHeight = window.innerHeight * 0.6;
+        composerRef.current.setSize(canvasWidth, canvasHeight);
+      }
     }
   }, []);
 
@@ -101,6 +104,7 @@ export const PostProcessing = () => {
   useEffect(() => {
     if (!scene || !camera || !composerRef.current) return;
 
+    console.log("Setting up post-processing effects");
     const composer = composerRef.current;
     composer.removeAllPasses();
 
@@ -117,14 +121,24 @@ export const PostProcessing = () => {
     ditheringEffectRef.current = ditheringEffect;
 
     composer.addPass(new EffectPass(camera, ditheringEffect));
+    console.log("Post-processing effects configured");
   }, [scene, camera, calculateGridSize, pixelSizeRatio, grayscaleOnly]);
 
   // Handle rendering and update grid size continuously
   useFrame(({ gl, scene: currentScene, camera: currentCamera }) => {
+    // Wait for scene and camera to be available
+    if (!currentScene || !currentCamera) {
+      console.log("Waiting for scene/camera...");
+      return;
+    }
+
     // Initialize composer if not yet created
     if (!composerRef.current) {
+      console.log("Creating EffectComposer");
       composerRef.current = new EffectComposer(gl);
       handleResize(); // Initial sizing
+      // Add a small delay to ensure proper initialization
+      setTimeout(() => setIsInitialized(true), 100);
     }
 
     // Update scene and camera references if changed
@@ -143,8 +157,12 @@ export const PostProcessing = () => {
       }
     }
 
-    // Render the composer if available
-    composerRef.current?.render();
+    // Only render if we have all the necessary components and are initialized
+    if (composerRef.current && scene && camera && isInitialized) {
+      // Let the EffectComposer handle the rendering
+      composerRef.current.render();
+      console.log("Rendering with EffectComposer");
+    }
   }, 1);
 
   return null;
