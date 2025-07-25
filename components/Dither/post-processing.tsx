@@ -61,7 +61,7 @@ export const PostProcessing = () => {
     // Invert the behavior: more dithering when closer to center
     const invertedDistance = 1 - normalizedDistance;
     const minGridSize = 1;
-    return Math.max(minGridSize, Math.round(invertedDistance * 10)); // 1 to 10
+    return Math.max(minGridSize, Math.round(invertedDistance * 20)); // 1 to 20
   }, []);
 
   // Mouse movement handler
