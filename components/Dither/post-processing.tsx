@@ -38,8 +38,8 @@ export const PostProcessing = () => {
   const [isInitialized, setIsInitialized] = useState(false);
 
   // Static effect values (removed Leva dependency)
-  const pixelSizeRatio = 1;
-  const grayscaleOnly = true;
+  const pixelSizeRatio = 2;
+  const grayscaleOnly = false;
 
   // Calculate dithering grid size based on mouse distance from center
   const calculateGridSize = useCallback(() => {

@@ -166,7 +166,7 @@ function TexturedPlane(): React.ReactElement {
 
   useEffect(() => {
     const textureLoader = new THREE.TextureLoader();
-    textureLoader.load("/files/images/groupd-meta.png", (loadedTexture) => {
+    textureLoader.load("/files/images/group-dynamics.png", (loadedTexture) => {
       setTexture(loadedTexture);
 
       // Get the actual image dimensions
