@@ -2,7 +2,11 @@
 /* eslint-disable react/display-name */
 import { FC, useEffect, useRef, useState, useCallback } from "react";
 import { Canvas } from "@react-three/fiber";
-import { OrbitControls, Center } from "@react-three/drei";
+import {
+  OrbitControls,
+  Center,
+  MeshReflectorMaterial,
+} from "@react-three/drei";
 
 import { EffectComposer, Pixelation } from "@react-three/postprocessing";
 import * as THREE from "three";
@@ -88,15 +92,18 @@ function TexturedPlane(): React.ReactElement | null {
   }
 
   return (
-    <mesh castShadow>
-      <planeGeometry args={[imageAspectRatio, 1]} />
-      <meshStandardMaterial
-        map={texture}
-        transparent={true}
-        opacity={1}
-        side={THREE.DoubleSide}
-      />
-    </mesh>
+    <>
+      <mesh rotation={[0, 0.15, 0]}>
+        <planeGeometry args={[imageAspectRatio, 1]} />
+
+        <meshStandardMaterial
+          map={texture}
+          transparent={true}
+          opacity={1}
+          side={THREE.DoubleSide}
+        />
+      </mesh>
+    </>
   );
 }
 
@@ -173,7 +180,6 @@ export default function Dither(): React.ReactElement {
       mousePosition.y <= innerBottom;
 
     if (!isInInnerArea) {
-      // Outside the inner area - no pixelation
       setPixelationGranularity(0);
       return;
     }
@@ -199,7 +205,7 @@ export default function Dither(): React.ReactElement {
       <ThreeDiv ref={containerRef}>
         <Canvas
           shadows
-          camera={{ position: [0, 0, 3], fov: 45 }}
+          camera={{ position: [0, 0, 4], fov: 45 }}
           gl={{
             alpha: false,
           }}
