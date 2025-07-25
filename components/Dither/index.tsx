@@ -147,7 +147,13 @@ export default function Dither(): React.ReactElement {
               <TexturedPlane />
             </group>
           </Center>
-          <OrbitControls />
+          <OrbitControls
+            minPolarAngle={Math.PI / 4} // 45 degrees from top
+            maxPolarAngle={(Math.PI * 3) / 4} // 45 degrees from bottom
+            minAzimuthAngle={-Math.PI / 4} // 45 degrees left
+            maxAzimuthAngle={Math.PI / 4} // 45 degrees right
+            enablePan={false}
+          />
           <EnvironmentWrapper intensity={1.5} highlight={"#000000"} />
           <Effects />
         </Canvas>
