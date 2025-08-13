@@ -2,11 +2,7 @@
 /* eslint-disable react/display-name */
 import { FC, useEffect, useRef, useState, useCallback } from "react";
 import { Canvas } from "@react-three/fiber";
-import {
-  OrbitControls,
-  Center,
-  MeshReflectorMaterial,
-} from "@react-three/drei";
+import { OrbitControls, Center } from "@react-three/drei";
 
 import { EffectComposer, Pixelation } from "@react-three/postprocessing";
 import * as THREE from "three";
@@ -114,9 +110,8 @@ export default function Dither(): React.ReactElement {
   const rendererRef = useRef<THREE.WebGLRenderer | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const [modelScale, setModelScale] = useState(3);
-  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
-  const [canvasBounds, setCanvasBounds] = useState({ width: 0, height: 0 });
   const [pixelationGranularity, setPixelationGranularity] = useState(0);
+  const animationRef = useRef<number>(0);
 
   // Responsive adjustment handler for model scale
   const handleResize = useCallback(() => {
@@ -132,73 +127,35 @@ export default function Dither(): React.ReactElement {
     }
   }, []);
 
-  // Handle mouse movement
-  const handleMouseMove = useCallback((event: MouseEvent) => {
-    const canvas = document.querySelector("canvas");
-    if (canvas) {
-      const rect = canvas.getBoundingClientRect();
-      const x = event.clientX - rect.left;
-      const y = event.clientY - rect.top;
-      setMousePosition({ x, y });
-      setCanvasBounds({ width: rect.width, height: rect.height });
-    }
-  }, []);
-
-  // Handle window resize and mouse events
+  // Handle window resize and start animation
   useEffect(() => {
     handleResize();
     window.addEventListener("resize", handleResize);
-    window.addEventListener("mousemove", handleMouseMove);
+
+    // Start the pixelation animation
+    const startTime = Date.now();
+    const cycleDuration = 6000; // 4 seconds for a complete cycle (0 -> 100 -> 0)
+
+    const updatePixelation = () => {
+      const elapsed = Date.now() - startTime;
+      const cycleProgress = (elapsed % cycleDuration) / cycleDuration;
+
+      // Create a smooth sine wave that goes from 0 to 100 and back to 0
+      const granularity = Math.sin(cycleProgress * Math.PI * 2) * 20 + 20;
+      setPixelationGranularity(granularity);
+
+      animationRef.current = requestAnimationFrame(updatePixelation);
+    };
+
+    updatePixelation();
+
     return () => {
       window.removeEventListener("resize", handleResize);
-      window.removeEventListener("mousemove", handleMouseMove);
+      if (animationRef.current) {
+        cancelAnimationFrame(animationRef.current);
+      }
     };
-  }, [handleResize, handleMouseMove]);
-
-  // Calculate pixelation granularity based on mouse position
-  useEffect(() => {
-    if (canvasBounds.width === 0 || canvasBounds.height === 0) return;
-
-    const centerX = canvasBounds.width / 2;
-    const centerY = canvasBounds.height / 2;
-
-    // Define the inner area where pixelation can occur (50vw x 50vh)
-    const innerWidth = canvasBounds.width * 0.5; // 50vw
-    const innerHeight = canvasBounds.height * 0.5; // 50vh
-
-    // Calculate the bounds of the inner area
-    const innerLeft = centerX - innerWidth / 2;
-    const innerRight = centerX + innerWidth / 2;
-    const innerTop = centerY - innerHeight / 2;
-    const innerBottom = centerY + innerHeight / 2;
-
-    // Check if mouse is within the inner area
-    const isInInnerArea =
-      mousePosition.x >= innerLeft &&
-      mousePosition.x <= innerRight &&
-      mousePosition.y >= innerTop &&
-      mousePosition.y <= innerBottom;
-
-    if (!isInInnerArea) {
-      setPixelationGranularity(0);
-      return;
-    }
-
-    // Calculate distance from center within the inner area
-    const distanceFromCenter = Math.sqrt(
-      Math.pow(mousePosition.x - centerX, 2) +
-        Math.pow(mousePosition.y - centerY, 2)
-    );
-
-    // Use the inner area radius as the max distance
-    const maxDistance = Math.sqrt(
-      Math.pow(innerWidth / 2, 2) + Math.pow(innerHeight / 2, 2)
-    );
-
-    const normalizedDistance = Math.min(distanceFromCenter / maxDistance, 1);
-    const newGranularity = (1 - normalizedDistance) * 100;
-    setPixelationGranularity(newGranularity);
-  }, [mousePosition, canvasBounds]);
+  }, [handleResize]);
 
   return (
     <>
@@ -214,7 +171,7 @@ export default function Dither(): React.ReactElement {
             gl.setClearColor(new THREE.Color("#ffffff"));
           }}
         >
-          <ambientLight intensity={1} />
+          <ambientLight intensity={2} />
           <Center>
             <group scale={modelScale}>
               <TexturedPlane />
@@ -226,6 +183,8 @@ export default function Dither(): React.ReactElement {
             minAzimuthAngle={-Math.PI / 4} // 45 degrees left
             maxAzimuthAngle={Math.PI / 4} // 45 degrees right
             enablePan={false}
+            enableDamping={true}
+            dampingFactor={0.05}
           />
           <EffectComposer autoClear={false}>
             <Pixelation granularity={pixelationGranularity} />
