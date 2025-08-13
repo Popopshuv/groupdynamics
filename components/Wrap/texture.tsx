@@ -9,6 +9,7 @@ import { SketchyMaterial } from "../SketchyMaterial";
 import { Canvas, useFrame, createPortal } from "@react-three/fiber";
 import { useRef, useMemo, useEffect, useState, FC } from "react";
 import * as THREE from "three";
+import useScreenSize from "@/hooks/useScreenSize";
 
 import styled from "styled-components";
 
@@ -222,6 +223,9 @@ const Transition = () => {
         maxPolarAngle={(Math.PI * 3) / 4}
         minAzimuthAngle={-Math.PI / 4}
         maxAzimuthAngle={Math.PI / 4}
+        // Responsive controls - adjust distance limits based on camera distance
+        minDistance={0.5}
+        maxDistance={10}
       />
       {createPortal(
         <>
@@ -279,14 +283,47 @@ const Transition = () => {
 
 const Texture = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const screenSize = useScreenSize();
+  const { screenWidth, screenHeight } = screenSize;
+
+  // Calculate responsive camera distance for natural scaling
+  const cameraDistance = useMemo(() => {
+    const baseWidth = 1920;
+    const baseHeight = 1080;
+    const baseDistance = 1; // Base camera distance
+
+    // Calculate scale factor based on the smaller dimension
+    const widthScale = screenWidth / baseWidth;
+    const heightScale = screenHeight / baseHeight;
+    const scaleFactor = Math.min(widthScale, heightScale, 1);
+
+    // Move camera away as screen gets smaller (inverse scaling)
+    // This makes the scene appear smaller on smaller screens
+    const responsiveDistance = baseDistance / scaleFactor;
+
+    return responsiveDistance;
+  }, [screenWidth, screenHeight]);
+
+  // Calculate responsive DPR
+  const dpr = useMemo(() => {
+    if (typeof window !== "undefined") {
+      return Math.min(window.devicePixelRatio || 1, 2);
+    }
+    return 1;
+  }, []);
+
+  // Calculate responsive camera position
+  const cameraPosition = useMemo(() => {
+    return [0, 0, cameraDistance] as [number, number, number];
+  }, [cameraDistance]);
 
   return (
     <>
       <ThreeDiv>
         <Canvas
           ref={canvasRef}
-          camera={{ position: [0, 0, 1] }}
-          dpr={1}
+          camera={{ position: cameraPosition }}
+          dpr={dpr}
           gl={{ preserveDrawingBuffer: true, antialias: false }}
           data-r3f-canvas
         >

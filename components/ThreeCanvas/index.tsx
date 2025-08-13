@@ -1,6 +1,7 @@
 import { Canvas } from "@react-three/fiber";
-import { useRef } from "react";
+import { useRef, useMemo } from "react";
 import CameraSettings from "./CameraSettings";
+import useScreenSize from "@/hooks/useScreenSize";
 import styled from "styled-components";
 
 // extend({ MeshLine, MeshLineMaterial });
@@ -18,18 +19,49 @@ const ThreeDiv = styled.div`
 `;
 
 const ThreeCanvas = ({ children }: ThreeCanvasProps) => {
-  const dpr = 1;
-  // const dpr = global?.window?.devicePixelRatio || 1;
+  const screenSize = useScreenSize();
+  const { screenWidth, screenHeight } = screenSize;
+
+  // Calculate responsive camera distance for natural scaling
+  const cameraDistance = useMemo(() => {
+    const baseWidth = 1920;
+    const baseHeight = 1080;
+    const baseDistance = 4; // Base camera distance for this component
+
+    // Calculate scale factor based on the smaller dimension
+    const widthScale = screenWidth / baseWidth;
+    const heightScale = screenHeight / baseHeight;
+    const scaleFactor = Math.min(widthScale, heightScale, 1);
+
+    // Move camera away as screen gets smaller (inverse scaling)
+    const responsiveDistance = baseDistance / scaleFactor;
+
+    return responsiveDistance;
+  }, [screenWidth, screenHeight]);
+
+  // Calculate responsive DPR
+  const dpr = useMemo(() => {
+    if (typeof window !== "undefined") {
+      return Math.min(window.devicePixelRatio || 1, 2);
+    }
+    return 1;
+  }, []);
+
+  // Calculate responsive camera position
+  const cameraPosition = useMemo(() => {
+    return [0, -1, cameraDistance] as [number, number, number];
+  }, [cameraDistance]);
 
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
   return (
     <ThreeDiv>
       <Canvas
-        camera={{ position: [0, -1, 4], fov: 65 }}
+        camera={{ position: cameraPosition, fov: 65 }}
         gl={{
           alpha: false,
         }}
+        dpr={dpr}
       >
         <CameraSettings />
         {children}
