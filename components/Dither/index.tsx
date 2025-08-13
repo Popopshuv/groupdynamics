@@ -15,12 +15,7 @@ const ThreeDiv = styled.div`
   top: 50%;
   transform: translate(-50%, -50%);
   width: 100vw;
-  height: 75vh;
-
-  @media (max-width: 768px) {
-    width: 90vw;
-    height: 90vh;
-  }
+  height: 100vh;
 
   canvas {
     width: 100%;
@@ -141,7 +136,7 @@ export default function Dither(): React.ReactElement {
       const cycleProgress = (elapsed % cycleDuration) / cycleDuration;
 
       // Create a smooth sine wave that goes from 0 to 100 and back to 0
-      const granularity = Math.sin(cycleProgress * Math.PI * 2) * 20 + 20;
+      const granularity = Math.sin(cycleProgress * Math.PI * 2) * 10 + 10;
       setPixelationGranularity(granularity);
 
       animationRef.current = requestAnimationFrame(updatePixelation);
@@ -162,7 +157,7 @@ export default function Dither(): React.ReactElement {
       <ThreeDiv ref={containerRef}>
         <Canvas
           shadows
-          camera={{ position: [0, 0, 4], fov: 45 }}
+          camera={{ position: [0, 0, 8], fov: 45 }}
           gl={{
             alpha: false,
           }}
@@ -178,13 +173,9 @@ export default function Dither(): React.ReactElement {
             </group>
           </Center>
           <OrbitControls
-            minPolarAngle={Math.PI / 4} // 45 degrees from top
-            maxPolarAngle={(Math.PI * 3) / 4} // 45 degrees from bottom
-            minAzimuthAngle={-Math.PI / 4} // 45 degrees left
-            maxAzimuthAngle={Math.PI / 4} // 45 degrees right
             enablePan={false}
             enableDamping={true}
-            dampingFactor={0.05}
+            dampingFactor={0.005}
           />
           <EffectComposer autoClear={false}>
             <Pixelation granularity={pixelationGranularity} />
