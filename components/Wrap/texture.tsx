@@ -99,7 +99,7 @@ const Transition = () => {
     const { gl, scene, camera, clock } = state;
 
     // Switch between 0 and 1 every 10 seconds
-    const cycleTime = 10; // 10 seconds per cycle
+    const cycleTime = 20; // 10 seconds per cycle
     const elapsedTime = clock.getElapsedTime();
     const timeInCycle = elapsedTime % cycleTime;
 
