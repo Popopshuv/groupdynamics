@@ -40,6 +40,7 @@ export function HomeContent() {
         style={{
           marginTop: "auto",
           paddingTop: "clamp(4rem, 12vh, 8rem)",
+          marginBottom: "100px",
           marginLeft: "auto",
           maxWidth: "32rem",
           paddingRight: "var(--page-pad)",

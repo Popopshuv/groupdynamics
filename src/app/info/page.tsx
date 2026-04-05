@@ -1,8 +1,8 @@
 import { WorkContent } from "./WorkContent";
 
 export const metadata = {
-  title: "Group Info",
-  description: "Signal, System, Matter, Space. Four disciplines, one system.",
+  title: "group dynamics",
+  description: "Signal, System, Matter, Space.",
 };
 
 export default function Work() {

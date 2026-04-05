@@ -49,10 +49,14 @@ export function RevealText({
 
       gsap.to(masks, {
         scaleX: 0,
-        duration: 0.6,
-        stagger: { each: stagger, from: "random" },
+        duration: 0.4,
+        stagger: { each: stagger * 0.7, from: "random" },
         ease: "power3.inOut",
         delay,
+        onComplete: () => {
+          // Kill any subpixel remnant
+          masks.forEach((m) => { m.style.display = "none"; });
+        },
       });
     };
 
