@@ -4,23 +4,23 @@ import "./globals.css";
 
 export const metadata: Metadata = {
   title: {
-    default: "Group Dynamics",
-    template: "%s — Group Dynamics",
+    default: "group dynamics",
+    template: "%s — group dynamics",
   },
   description:
     "Independent design and development lab. We work off-grid, building ideas that feel discovered, not manufactured. Part studio, part workshop, part experimental unit.",
   metadataBase: new URL("https://groupdynamics.net"),
   openGraph: {
-    title: "Group Dynamics",
+    title: "group dynamics",
     description:
       "Independent design and development lab. Part studio, part workshop, part experimental unit.",
-    siteName: "Group Dynamics",
+    siteName: "group dynamics",
     type: "website",
     images: [{ url: "/og.webp" }],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Group Dynamics",
+    title: "group dynamics",
     description:
       "Independent design and development lab. Part studio, part workshop, part experimental unit.",
     images: ["/og.webp"],
