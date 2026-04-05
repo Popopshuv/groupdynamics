@@ -5,7 +5,7 @@ import "./globals.css";
 export const metadata: Metadata = {
   title: {
     default: "group dynamics",
-    template: "%s — group dynamics",
+    template: "%s",
   },
   description:
     "Independent design and development lab. We work off-grid, building ideas that feel discovered, not manufactured. Part studio, part workshop, part experimental unit.",

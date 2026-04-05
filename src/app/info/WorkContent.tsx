@@ -67,58 +67,64 @@ export function WorkContent() {
     >
       <section style={{ flex: 1 }}>
         <div className="flex flex-col gap-12 max-w-md">
-          {capabilities.map((cap, i) => (
-            <div key={cap.title} className="flex flex-col">
-              <RevealText
-                as="h3"
-                delay={i * 0.05}
-                style={{
-                  fontSize: "var(--text-reg)",
-                  letterSpacing: "0.15em",
-                  textTransform: "uppercase",
-                  marginBottom: "0.5rem",
-                }}
-              >
-                {cap.title}
-              </RevealText>
-              <RevealText
-                as="p"
-                delay={i * 0.05 + 0.05}
-                style={{
-                  fontSize: "var(--text-sm)",
-                  lineHeight: 1.6,
-                  opacity: 0.8,
-                  marginBottom: "0.75rem",
-                }}
-              >
-                {cap.description}
-              </RevealText>
-              <ul className="flex flex-col">
-                {cap.items.map((item, j) => (
-                  <li
-                    key={item}
-                    style={{
-                      borderBottom: "1px solid rgba(0,0,0,0.08)",
-                      padding: "0.15rem 0",
-                      lineHeight: 1.2,
-                    }}
-                  >
-                    <RevealText
-                      as="span"
-                      delay={0.2 + j * 0.08}
+          {capabilities.map((cap, i) => {
+            const base = 0.3 + i * 0.3;
+            return (
+              <div key={cap.title} className="flex flex-col">
+                <RevealText
+                  as="h3"
+                  delay={base}
+                  stagger={0.06}
+                  style={{
+                    fontSize: "var(--text-reg)",
+                    letterSpacing: "0.15em",
+                    textTransform: "uppercase",
+                    marginBottom: "0.5rem",
+                  }}
+                >
+                  {cap.title}
+                </RevealText>
+                <RevealText
+                  as="p"
+                  delay={base + 0.1}
+                  stagger={0.06}
+                  style={{
+                    fontSize: "var(--text-sm)",
+                    lineHeight: 1.6,
+                    opacity: 0.8,
+                    marginBottom: "0.75rem",
+                  }}
+                >
+                  {cap.description}
+                </RevealText>
+                <ul className="flex flex-col">
+                  {cap.items.map((item, j) => (
+                    <li
+                      key={item}
                       style={{
-                        fontSize: "var(--text-sm)",
-                        opacity: 0.9,
+                        borderBottom: "1px solid rgba(0,0,0,0.08)",
+                        padding: "0.15rem 0",
                         lineHeight: 1.2,
                       }}
                     >
-                      {item}
-                    </RevealText>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          ))}
+                      <RevealText
+                        as="span"
+                        delay={base + 0.2 + j * 0.1}
+                        stagger={0.06}
+                        style={{
+                          fontSize: "var(--text-sm)",
+                          opacity: 0.9,
+                          lineHeight: 1.2,
+                        }}
+                      >
+                        {item}
+                      </RevealText>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            );
+          })}
         </div>
       </section>
     </div>
