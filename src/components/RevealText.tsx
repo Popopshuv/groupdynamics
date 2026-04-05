@@ -60,28 +60,8 @@ export function RevealText({
       });
     };
 
-    // Wait for preloader to finish before animating
-    const tryAnimate = () => {
-      const { preloaderDone } = useTransitionStore.getState();
-      if (!preloaderDone) {
-        const unsub = useTransitionStore.subscribe((state) => {
-          if (state.preloaderDone) {
-            unsub();
-            if (triggerOnScroll) {
-              ScrollTrigger.create({
-                trigger: el,
-                start: "top 95%",
-                once: true,
-                onEnter: animate,
-              });
-            } else {
-              animate();
-            }
-          }
-        });
-        return unsub;
-      }
-
+    // Wait for intro (preloader + blocks) to complete before animating
+    const setupTrigger = () => {
       if (triggerOnScroll) {
         ScrollTrigger.create({
           trigger: el,
@@ -92,6 +72,21 @@ export function RevealText({
       } else {
         animate();
       }
+    };
+
+    const tryAnimate = () => {
+      const { introComplete } = useTransitionStore.getState();
+      if (!introComplete) {
+        const unsub = useTransitionStore.subscribe((state) => {
+          if (state.introComplete) {
+            unsub();
+            setupTrigger();
+          }
+        });
+        return unsub;
+      }
+
+      setupTrigger();
       return undefined;
     };
 

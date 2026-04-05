@@ -6,49 +6,37 @@ import { useTransitionStore } from "@/store/useTransitionStore";
 
 export function PageReveal({ children }: { children: ReactNode }) {
   const ref = useRef<HTMLDivElement>(null);
-  const prevPhase = useRef<string>("");
+  const hasRevealed = useRef(false);
 
   useEffect(() => {
     const el = ref.current;
     if (!el) return;
 
-    // Don't reveal until preloader is done
-    const doInitialReveal = () => {
-      gsap.to(el, {
-        opacity: 1,
-        duration: 0.5,
-        ease: "power2.out",
-      });
+    const doReveal = () => {
+      if (hasRevealed.current) return;
+      hasRevealed.current = true;
+      gsap.to(el, { opacity: 1, duration: 0.5, ease: "power2.out" });
     };
 
-    const { preloaderDone } = useTransitionStore.getState();
-    if (preloaderDone) {
-      doInitialReveal();
+    // Check immediately
+    if (useTransitionStore.getState().introComplete) {
+      doReveal();
     }
 
-    const unsubscribe = useTransitionStore.subscribe((state) => {
-      // Preloader just finished — reveal page
-      if (state.preloaderDone && prevPhase.current === "") {
-        doInitialReveal();
+    const unsubscribe = useTransitionStore.subscribe((state, prev) => {
+      // Intro just completed
+      if (state.introComplete && !hasRevealed.current) {
+        doReveal();
       }
 
-      if (state.phase === "exiting" && prevPhase.current !== "exiting") {
-        gsap.to(el, {
-          opacity: 0,
-          duration: 0.3,
-          ease: "power2.in",
-        });
-      } else if (
-        state.phase === "revealing" &&
-        prevPhase.current !== "revealing"
-      ) {
-        gsap.fromTo(
-          el,
-          { opacity: 0 },
-          { opacity: 1, duration: 0.6, ease: "power2.out" }
-        );
+      // Page transitions
+      if (state.phase === "exiting" && prev.phase !== "exiting") {
+        hasRevealed.current = false;
+        gsap.to(el, { opacity: 0, duration: 0.3, ease: "power2.in" });
+      } else if (state.phase === "revealing" && prev.phase !== "revealing") {
+        hasRevealed.current = true;
+        gsap.to(el, { opacity: 1, duration: 0.6, ease: "power2.out" });
       }
-      prevPhase.current = state.phase;
     });
 
     return unsubscribe;

@@ -83,6 +83,10 @@ export function BackgroundBlocks() {
       const r = i < stickCount ? restingRect() : parkedRect();
       tl.to(block, { ...r, duration: 1, ease: "power3.out" }, "settle");
     });
+
+    tl.call(() => {
+      useTransitionStore.getState().setBlocksReady();
+    });
   }, []);
 
   // Transition animations
