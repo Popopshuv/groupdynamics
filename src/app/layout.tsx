@@ -16,12 +16,14 @@ export const metadata: Metadata = {
       "Independent design and development lab. Part studio, part workshop, part experimental unit.",
     siteName: "Group Dynamics",
     type: "website",
+    images: [{ url: "/og.webp" }],
   },
   twitter: {
-    card: "summary",
+    card: "summary_large_image",
     title: "Group Dynamics",
     description:
       "Independent design and development lab. Part studio, part workshop, part experimental unit.",
+    images: ["/og.webp"],
   },
 };
 
