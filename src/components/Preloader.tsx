@@ -15,8 +15,12 @@ export function Preloader() {
     const container = containerRef.current;
     if (!container) return;
 
-    const masks = container.querySelectorAll(".preloader-mask") as NodeListOf<HTMLElement>;
-    const items = container.querySelectorAll(".preloader-item") as NodeListOf<HTMLElement>;
+    const masks = container.querySelectorAll(
+      ".preloader-mask",
+    ) as NodeListOf<HTMLElement>;
+    const items = container.querySelectorAll(
+      ".preloader-item",
+    ) as NodeListOf<HTMLElement>;
 
     // Start with masks covering text
     gsap.set(items, { visibility: "visible" });
@@ -84,7 +88,11 @@ export function Preloader() {
           >
             <span
               className="preloader-item"
-              style={{ display: "inline-block", visibility: "hidden", lineHeight: "inherit" }}
+              style={{
+                display: "inline-block",
+                visibility: "hidden",
+                lineHeight: "inherit",
+              }}
             >
               {word}
             </span>
@@ -96,7 +104,7 @@ export function Preloader() {
                 left: 0,
                 width: "calc(100% + 0.05em)",
                 height: "100%",
-                backgroundColor: "var(--white)",
+                backgroundColor: "var(--black)",
                 transformOrigin: "right center",
                 zIndex: 2,
               }}
