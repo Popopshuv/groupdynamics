@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useEffect } from "react";
+import { useRef, useEffect, useState } from "react";
 import gsap from "gsap";
 // @ts-ignore – gsap types casing conflict (Draggable vs draggable)
 import { Draggable } from "gsap/Draggable";
@@ -12,10 +12,21 @@ interface DraggableImageProps {
   src: string;
   alt: string;
   side?: "left" | "right";
+  mobileSide?: "left" | "right";
 }
 
-export function DraggableImage({ src, alt, side = "left" }: DraggableImageProps) {
+export function DraggableImage({ src, alt, side = "left", mobileSide }: DraggableImageProps) {
   const ref = useRef<HTMLDivElement>(null);
+  const [activeSide, setActiveSide] = useState(side);
+
+  useEffect(() => {
+    const update = () => {
+      setActiveSide(mobileSide && window.innerWidth < 768 ? mobileSide : side);
+    };
+    update();
+    window.addEventListener("resize", update);
+    return () => window.removeEventListener("resize", update);
+  }, [side, mobileSide]);
 
   useEffect(() => {
     if (!ref.current) return;
@@ -72,7 +83,7 @@ export function DraggableImage({ src, alt, side = "left" }: DraggableImageProps)
       ref={ref}
       style={{
         position: "absolute",
-        [side === "left" ? "left" : "right"]: "var(--page-pad)",
+        [activeSide === "left" ? "left" : "right"]: "var(--page-pad)",
         bottom: "clamp(4rem, 15vh, 8rem)",
         width: "clamp(120px, 34vw, 500px)",
         visibility: "hidden",

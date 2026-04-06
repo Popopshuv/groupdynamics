@@ -68,6 +68,7 @@ export function HomeContent() {
         src="/data/general/5.webp"
         alt="Group Dynamics"
         side="left"
+        mobileSide="right"
       />
     </div>
   );
