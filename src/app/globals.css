@@ -17,11 +17,10 @@
   /* Colors */
   --white: #f0e6d3;
   --black: #1a1a1a;
-  --grey: #949494;
-  --beige: #c4a484;
-  --sage: #d4b896;
-  --lavender: #b8b0a6;
-  --teal: #a89f93;
+  --beige: #fafaf9;
+  --sage: #eeeded;
+  --lavender: #e8e7e5;
+  --teal: #f1f1f1;
 
   /* Spacing */
   --page-pad: clamp(1rem, 3vw, 2.5rem);
@@ -31,7 +30,7 @@
 }
 
 @theme inline {
-  --color-background: var(--white);
+  --color-background: #fff;
   --color-foreground: var(--black);
   --text-reg: 0.6875rem;
   --text-tiny: 0.625rem;
@@ -40,7 +39,7 @@
 }
 
 body {
-  background: var(--white);
+  background: #fff;
   color: var(--black);
   font-family: var(--font-abc);
   font-weight: 300;
@@ -60,7 +59,9 @@ a {
   color: inherit;
 }
 
-.word, .char, .line {
+.word,
+.char,
+.line {
   display: inline-block;
 }
 

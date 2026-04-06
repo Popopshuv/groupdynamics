@@ -5,13 +5,18 @@ import gsap from "gsap";
 import { useTransitionStore } from "@/store/useTransitionStore";
 
 const BLOCK_COUNT = 4;
-const COLORS = ["var(--beige)", "var(--sage)", "var(--lavender)", "var(--teal)"];
+const COLORS = ["#e0dfdf", "#f1f1f1", "#FF0000", "#e7e6e6"];
 
 function pick<T>(arr: T[]): T {
   return arr[Math.floor(Math.random() * arr.length)];
 }
 
-function randomRect(): { left: string; top: string; width: string; height: string } {
+function randomRect(): {
+  left: string;
+  top: string;
+  width: string;
+  height: string;
+} {
   const w = 15 + Math.random() * 60;
   const h = 15 + Math.random() * 60;
   const l = Math.random() * (100 - w);
@@ -19,7 +24,12 @@ function randomRect(): { left: string; top: string; width: string; height: strin
   return { left: `${l}%`, top: `${t}%`, width: `${w}%`, height: `${h}%` };
 }
 
-function restingRect(): { left: string; top: string; width: string; height: string } {
+function restingRect(): {
+  left: string;
+  top: string;
+  width: string;
+  height: string;
+} {
   const patterns = [
     () => {
       const h = 20 + Math.random() * 40;
@@ -42,7 +52,12 @@ function restingRect(): { left: string; top: string; width: string; height: stri
   return pick(patterns)();
 }
 
-function parkedRect(): { left: string; top: string; width: string; height: string } {
+function parkedRect(): {
+  left: string;
+  top: string;
+  width: string;
+  height: string;
+} {
   const corner = pick(["0%", "50%", "95%"]);
   return { left: corner, top: corner, width: "1%", height: "1%" };
 }
@@ -73,7 +88,11 @@ export function BackgroundBlocks() {
       const label = `intro${s}`;
       tl.addLabel(label);
       blocks.forEach((block) => {
-        tl.to(block, { ...randomRect(), duration: 0.4, ease: "power2.inOut" }, label);
+        tl.to(
+          block,
+          { ...randomRect(), duration: 0.4, ease: "power2.inOut" },
+          label,
+        );
       });
     }
 
@@ -100,7 +119,10 @@ export function BackgroundBlocks() {
       prevPhaseRef.current = phase;
 
       if (phase === "exiting") {
-        if (tlRef.current) { tlRef.current.kill(); tlRef.current = null; }
+        if (tlRef.current) {
+          tlRef.current.kill();
+          tlRef.current = null;
+        }
 
         const blocks = getBlocks();
         const tl = gsap.timeline();
@@ -110,7 +132,11 @@ export function BackgroundBlocks() {
           const label = `s${s}`;
           tl.addLabel(label);
           blocks.forEach((block) => {
-            tl.to(block, { ...randomRect(), duration: 0.35, ease: "power2.inOut" }, label);
+            tl.to(
+              block,
+              { ...randomRect(), duration: 0.35, ease: "power2.inOut" },
+              label,
+            );
           });
         }
 
@@ -120,7 +146,10 @@ export function BackgroundBlocks() {
       }
 
       if (phase === "entering") {
-        if (tlRef.current) { tlRef.current.kill(); tlRef.current = null; }
+        if (tlRef.current) {
+          tlRef.current.kill();
+          tlRef.current = null;
+        }
 
         const blocks = getBlocks();
         const stickCount = Math.floor(Math.random() * 3) + 1;
@@ -148,7 +177,9 @@ export function BackgroundBlocks() {
       {Array.from({ length: BLOCK_COUNT }, (_, i) => (
         <span
           key={i}
-          ref={(el) => { blockRefs.current[i] = el; }}
+          ref={(el) => {
+            blockRefs.current[i] = el;
+          }}
           style={{
             position: "absolute",
             left: "50%",
