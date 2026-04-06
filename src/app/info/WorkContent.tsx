@@ -1,6 +1,7 @@
 "use client";
 
 import { RevealText } from "@/components/RevealText";
+import { DraggableImage } from "@/components/DraggableImage";
 
 const capabilities = [
   {
@@ -57,6 +58,7 @@ export function WorkContent() {
   return (
     <div
       style={{
+        position: "relative",
         minHeight: "100vh",
         padding: "var(--page-pad)",
         paddingTop: "6rem",
@@ -121,6 +123,12 @@ export function WorkContent() {
           ))}
         </div>
       </section>
+      <DraggableImage
+        src="/data/structured/109.JPEG"
+        alt="Group Dynamics"
+        side="right"
+        route="/info"
+      />
     </div>
   );
 }

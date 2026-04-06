@@ -1,11 +1,13 @@
 "use client";
 
 import { RevealText } from "@/components/RevealText";
+import { DraggableImage } from "@/components/DraggableImage";
 
 export function HomeContent() {
   return (
     <div
       style={{
+        position: "relative",
         minHeight: "100vh",
         padding: "var(--page-pad)",
         paddingTop: "6rem",
@@ -62,6 +64,12 @@ export function HomeContent() {
           Group Dynamics
         </RevealText>
       </section>
+      <DraggableImage
+        src="/data/general/5.webp"
+        alt="Group Dynamics"
+        side="left"
+        route="/"
+      />
     </div>
   );
 }
