@@ -95,7 +95,7 @@ export function WorkContent() {
               >
                 {cap.description}
               </RevealText>
-              <ul className="flex flex-col">
+              <ul className="flex flex-col items-start">
                 {cap.items.map((item) => (
                   <li
                     key={item}
@@ -103,6 +103,7 @@ export function WorkContent() {
                       borderBottom: "1px solid rgba(0,0,0,0.08)",
                       padding: "0.15rem 0",
                       lineHeight: 1.2,
+                      display: "inline-block",
                     }}
                   >
                     <RevealText
