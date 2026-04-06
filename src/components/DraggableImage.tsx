@@ -2,6 +2,7 @@
 
 import { useRef, useEffect } from "react";
 import gsap from "gsap";
+// @ts-ignore – gsap types casing conflict (Draggable vs draggable)
 import { Draggable } from "gsap/Draggable";
 import { useTransitionStore } from "@/store/useTransitionStore";
 

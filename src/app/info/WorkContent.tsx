@@ -127,7 +127,6 @@ export function WorkContent() {
         src="/data/structured/109.JPEG"
         alt="Group Dynamics"
         side="right"
-        route="/info"
       />
     </div>
   );
