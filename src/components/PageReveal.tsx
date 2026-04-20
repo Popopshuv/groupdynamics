@@ -36,7 +36,9 @@ export function PageReveal({ children }: { children: ReactNode }) {
           opacity: 0,
           duration: 0.3,
           ease: "power2.in",
-          onComplete: () => gsap.set(el, { opacity: 0 }),
+          onComplete: () => {
+            gsap.set(el, { opacity: 0 });
+          },
         });
       } else if (state.phase === "navigating" && prev.phase === "exiting") {
         // Hard lock to 0 across the React commit so no stale page peeks through
