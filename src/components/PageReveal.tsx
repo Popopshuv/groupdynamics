@@ -32,7 +32,16 @@ export function PageReveal({ children }: { children: ReactNode }) {
       // Page transitions
       if (state.phase === "exiting" && prev.phase !== "exiting") {
         hasRevealed.current = false;
-        gsap.to(el, { opacity: 0, duration: 0.3, ease: "power2.in" });
+        gsap.to(el, {
+          opacity: 0,
+          duration: 0.3,
+          ease: "power2.in",
+          onComplete: () => gsap.set(el, { opacity: 0 }),
+        });
+      } else if (state.phase === "navigating" && prev.phase === "exiting") {
+        // Hard lock to 0 across the React commit so no stale page peeks through
+        gsap.killTweensOf(el);
+        gsap.set(el, { opacity: 0 });
       } else if (state.phase === "revealing" && prev.phase !== "revealing") {
         hasRevealed.current = true;
         gsap.to(el, { opacity: 1, duration: 0.6, ease: "power2.out" });

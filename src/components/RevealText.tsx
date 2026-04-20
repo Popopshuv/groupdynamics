@@ -74,20 +74,21 @@ export function RevealText({
       }
     };
 
-    const tryAnimate = () => {
-      const { introComplete } = useTransitionStore.getState();
-      if (!introComplete) {
-        const unsub = useTransitionStore.subscribe((state) => {
-          if (state.introComplete) {
-            unsub();
-            setupTrigger();
-          }
-        });
-        return unsub;
-      }
+    const isReady = (s: ReturnType<typeof useTransitionStore.getState>) =>
+      s.introComplete && (s.phase === "idle" || s.phase === "revealing");
 
-      setupTrigger();
-      return undefined;
+    const tryAnimate = () => {
+      if (isReady(useTransitionStore.getState())) {
+        setupTrigger();
+        return undefined;
+      }
+      const unsub = useTransitionStore.subscribe((state) => {
+        if (isReady(state)) {
+          unsub();
+          setupTrigger();
+        }
+      });
+      return unsub;
     };
 
     const unsub = tryAnimate();

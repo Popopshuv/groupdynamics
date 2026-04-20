@@ -95,22 +95,22 @@ export function WorkContent() {
               >
                 {cap.description}
               </RevealText>
-              <ul className="flex flex-col items-start">
+              <ul className="flex flex-col" style={{ lineHeight: 0 }}>
                 {cap.items.map((item) => (
                   <li
                     key={item}
                     style={{
-                      borderBottom: "1px solid rgba(0,0,0,0.08)",
+                      // borderBottom: "1px solid rgba(0,0,0,0.08)",
                       padding: "0.15rem 0",
-                      lineHeight: 1.2,
-                      display: "inline-block",
+                      lineHeight: 0.5,
+                      display: "inline",
                     }}
                   >
                     <RevealText
                       as="span"
                       stagger={0.06}
                       style={{
-                        fontSize: "var(--text-sm)",
+                        fontSize: "var(--text-xs)",
                         opacity: 0.9,
                         lineHeight: 1.2,
                       }}
