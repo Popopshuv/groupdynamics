@@ -65,6 +65,15 @@ a {
   display: inline-block;
 }
 
+/* PageReveal fades content in from opacity 0 once the intro finishes, so
+   nothing renders without JS. Fine for the studio pages, not fine for
+   /handclaim/privacy — a policy App Review can't read is a rejection. */
+@media (scripting: none) {
+  .page-reveal {
+    opacity: 1 !important;
+  }
+}
+
 .split-text {
   font-kerning: none;
 }

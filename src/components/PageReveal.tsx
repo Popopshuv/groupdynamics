@@ -54,7 +54,7 @@ export function PageReveal({ children }: { children: ReactNode }) {
   }, []);
 
   return (
-    <div ref={ref} style={{ opacity: 0 }}>
+    <div ref={ref} className="page-reveal" style={{ opacity: 0 }}>
       {children}
     </div>
   );
