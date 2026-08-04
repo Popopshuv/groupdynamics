@@ -12,7 +12,8 @@ export const metadata: Metadata = {
 // is deliberately a plain server component — no RevealText, no per-character
 // splitting. The document has to be readable the moment the HTML lands.
 
-const LAST_UPDATED = "31 July 2026";
+const LAST_UPDATED = "4 August 2026";
+const COPYRIGHT_YEAR = "2026";
 
 export default function HandclaimPrivacy() {
   return (
@@ -24,8 +25,11 @@ export default function HandclaimPrivacy() {
         </header>
 
         <p style={styles.body}>
-          handclaim is made by GROUP DYNAMICS. This policy covers the handclaim
-          iOS app (bundle identifier com.groupdynamics.handclaim).
+          handclaim is published and distributed by Greywolf Technologies LLC.
+          This policy covers the handclaim iOS app (bundle identifier
+          com.groupdynamics.handclaim). &ldquo;group dynamics&rdquo; is a name
+          used for design work and is not a separate legal entity; Greywolf
+          Technologies LLC is responsible for the app and for this policy.
         </p>
 
         <Section title="The short version">
@@ -145,6 +149,12 @@ export default function HandclaimPrivacy() {
           </p>
         </Section>
 
+        <p style={styles.colophon}>
+          handclaim is distributed by Greywolf Technologies LLC.
+          <br />© {COPYRIGHT_YEAR} Greywolf Technologies LLC. All rights
+          reserved.
+        </p>
+
         <Link
           href="/"
           style={styles.back}
@@ -230,6 +240,14 @@ const styles = {
   },
   link: {
     borderBottom: "1px solid rgba(26,26,26,0.3)",
+  },
+  colophon: {
+    fontSize: "var(--text-sm)",
+    lineHeight: 1.7,
+    opacity: 0.5,
+    marginTop: "3rem",
+    paddingTop: "1.5rem",
+    borderTop: "1px solid rgba(26,26,26,0.15)",
   },
   back: {
     display: "inline-block",
