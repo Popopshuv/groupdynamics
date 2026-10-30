@@ -54,6 +54,18 @@ export function Nav() {
             </RevealText>
           </TransitionLink>
         )}
+        <a
+          href="https://www.instagram.com/groupdynamics__/"
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label="Group Dynamics on Instagram"
+          className="hover:opacity-50 transition-opacity"
+          style={{ color: "#FF0000", letterSpacing: 0 }}
+        >
+          <RevealText as="span" triggerOnScroll={false} delay={0.2}>
+            ___
+          </RevealText>
+        </a>
       </div>
     </nav>
   );
