@@ -9,7 +9,7 @@ export const metadata: Metadata = {
     template: "%s",
   },
   description:
-    "Independent design and development lab. We work off-grid, building ideas that feel discovered, not manufactured. Part studio, part workshop, part experimental unit.",
+    "Independent design and development lab. Part studio, part workshop, part experimental unit.",
   metadataBase: new URL("https://groupdynamics.net"),
   openGraph: {
     title: "group dynamics",

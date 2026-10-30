@@ -45,7 +45,8 @@ export function AboutContent() {
               letterSpacing: "0.02em",
             }}
           >
-            Group Dynamics is an independent design and development lab. We work off-grid, building ideas that feel discovered, not manufactured. Part studio, part workshop, part experimental unit.
+            Group Dynamics is an independent design and development lab. Part
+            studio, part workshop, part experimental unit.
           </RevealText>
           <RevealText
             as="p"
@@ -57,7 +58,8 @@ export function AboutContent() {
               marginTop: "1rem",
             }}
           >
-            We prototype quickly, think systemically, and craft experiences that cut cleanly through crowded markets.
+            We prototype quickly, think systemically, and craft experiences that
+            cut cleanly through crowded markets.
           </RevealText>
         </div>
       </section>

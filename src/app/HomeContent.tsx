@@ -33,7 +33,8 @@ export function HomeContent() {
             letterSpacing: "0.02em",
           }}
         >
-          Independent design and development lab. We work off-grid, building ideas that feel discovered, not manufactured. Part studio, part workshop, part experimental unit. We prototype quickly, think systemically, and craft experiences that cut cleanly through crowded markets.
+          Independent design and development lab. Part studio, part workshop,
+          part experimental unit.
         </RevealText>
       </section>
 
