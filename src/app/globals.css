@@ -21,6 +21,7 @@
   --sage: #eeeded;
   --lavender: #e8e7e5;
   --teal: #f1f1f1;
+  --gray-3: #5f5852; /* secondary text — line numbers, struck words, notes */
 
   /* Spacing */
   --page-pad: clamp(1rem, 3vw, 2.5rem);

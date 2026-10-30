@@ -1,134 +1,152 @@
 "use client";
 
-import { RevealText } from "@/components/RevealText";
 import { DraggableImage } from "@/components/DraggableImage";
+import {
+  RedlineRow,
+  type RedlineKind,
+  type RedlineSegment,
+} from "@/components/RedlineRow";
 
-const capabilities = [
-  {
-    title: "Signal",
-    description:
-      "Clarity before momentum. Intent sharpened. Positioning defined. Ideas pressure tested until the strong survive.",
-    items: [
-      "Brand positioning and narrative",
-      "Go-to-market architecture",
-      "Product and category ideation",
-      "Creative direction",
-      "Concept decks and proof-of-idea frameworks",
-    ],
-  },
-  {
-    title: "System",
-    description:
-      "Digital structures built to move. Interactive platforms, real time 3D environments, custom infrastructure. Raw code. High performance.",
-    items: [
-      "Interactive web and app development",
-      "Real time 3D and WebGL experiences",
-      "Brand identity systems",
-      "Custom CMS and internal brand tools",
-      "Motion systems and advanced animation",
-    ],
-  },
-  {
-    title: "Matter",
-    description:
-      "Concept to physical form. Apparel, hard goods, engineered objects. Sketch to prototype to factory output.",
-    items: [
-      "Product concept and industrial design",
-      "Design and tech packs",
-      "3D modeling and rapid prototyping",
-      "Manufacturing files and sourcing guidance",
-      "Packaging and physical brand systems",
-    ],
-  },
-  {
-    title: "Space",
-    description:
-      "Environments that react. LED floors, interactive walls, responsive installations, spatial systems merging digital and physical.",
-    items: [
-      "Interactive installations",
-      "LED and projection driven environments",
-      "Sensor based and reactive systems",
-      "Retail and pop up activations",
-      "Stage and spatial digital integration",
-    ],
-  },
+interface Line {
+  kind: RedlineKind;
+  segments?: RedlineSegment[];
+  note?: string;
+}
+
+const head = (title: string, note?: string): Line => ({
+  kind: "head",
+  segments: [title],
+  note,
+});
+const text = (segments: RedlineSegment[] | string, note?: string): Line => ({
+  kind: "text",
+  segments: typeof segments === "string" ? [segments] : segments,
+  note,
+});
+const item = (segment: RedlineSegment, note?: string): Line => ({
+  kind: "item",
+  segments: [segment],
+  note,
+});
+const blank: Line = { kind: "blank" };
+
+// The page reads as a working draft: the live copy is what's left standing,
+// the struck lines are what got cut on the way there.
+const draft: Line[] = [
+  head("What we do", "draft 7"),
+  blank,
+  text(
+    [{ strike: "A full-service agency." }, "Part studio, part workshop, part experimental unit."],
+    "never an agency",
+  ),
+  blank,
+  blank,
+
+  head("01 Signal"),
+  text("Clarity before momentum."),
+  text("Intent sharpened."),
+  text("Positioning defined."),
+  text(
+    ["Ideas", { strike: "workshopped" }, "pressure tested until the strong survive."],
+    "workshops are too polite",
+  ),
+  blank,
+  item("Brand positioning and narrative"),
+  item("Go-to-market architecture"),
+  item("Product and category ideation"),
+  item({ strike: "Social media management" }, "not our lane"),
+  item("Creative direction"),
+  item("Concept decks and proof-of-idea frameworks"),
+  blank,
+  blank,
+
+  head("02 System"),
+  text(
+    ["Digital", { strike: "experiences" }, "structures built to move."],
+    "structures, not experiences",
+  ),
+  text("Interactive platforms, real time 3D environments, custom infrastructure."),
+  text([{ strike: "Scalable solutions." }, "Raw code. High performance."], "no buzzwords"),
+  blank,
+  item("Interactive web and app development"),
+  item("Real time 3D and WebGL experiences"),
+  item("Brand identity systems"),
+  item("Custom CMS and internal brand tools"),
+  item({ strike: "Template site builds" }, "we write it"),
+  item("Motion systems and advanced animation"),
+  blank,
+  blank,
+
+  head("03 Matter"),
+  text("Concept to physical form."),
+  text("Apparel, hard goods, engineered objects."),
+  text(["Sketch to prototype to", { strike: "render" }, "factory output."], "it has to exist"),
+  blank,
+  item("Product concept and industrial design"),
+  item("Design and tech packs"),
+  item("3D modeling and rapid prototyping"),
+  item({ strike: "Print-on-demand merch" }, "made, not printed"),
+  item("Manufacturing files and sourcing guidance"),
+  item("Packaging and physical brand systems"),
+  blank,
+  blank,
+
+  head("04 Space"),
+  text(["Environments that", { strike: "display" }, "react."], "a screen isn't a space"),
+  text(
+    "LED floors, interactive walls, responsive installations, spatial systems merging digital and physical.",
+  ),
+  blank,
+  item("Interactive installations"),
+  item("LED and projection driven environments"),
+  item("Sensor based and reactive systems"),
+  item({ strike: "Static signage" }, "it has to react"),
+  item("Retail and pop up activations"),
+  item("Stage and spatial digital integration"),
+  blank,
+  blank,
+
+  text([{ strike: "Request a proposal." }, "Start a conversation."], "less form, more talk"),
+  text([{ link: "info@groupdynamics.net", href: "mailto:info@groupdynamics.net" }]),
 ];
 
 export function WorkContent() {
   return (
     <div
+      // Mobile: the draft runs full width, so leave clear space under it for
+      // the draggable image (34vw wide, ~3:2 portrait) instead of covering text.
+      className="pb-[calc(51vw+clamp(4rem,15vh,8rem)+2rem)] md:pb-12"
       style={{
         position: "relative",
         minHeight: "100vh",
-        padding: "var(--page-pad)",
+        paddingLeft: "var(--page-pad)",
+        paddingRight: "var(--page-pad)",
         paddingTop: "6rem",
-        paddingBottom: "3rem",
         display: "flex",
         flexDirection: "column",
       }}
     >
-      <section style={{ flex: 1 }}>
-        <div className="flex flex-col gap-12 max-w-md">
-          {capabilities.map((cap) => (
-            <div key={cap.title} className="flex flex-col">
-              <RevealText
-                as="h3"
-                stagger={0.06}
-                style={{
-                  fontSize: "var(--text-reg)",
-                  letterSpacing: "0.15em",
-                  textTransform: "uppercase",
-                  marginBottom: "0.5rem",
-                }}
-              >
-                {cap.title}
-              </RevealText>
-              <RevealText
-                as="p"
-                stagger={0.06}
-                style={{
-                  fontSize: "var(--text-sm)",
-                  lineHeight: 1.6,
-                  opacity: 0.8,
-                  marginBottom: "0.75rem",
-                }}
-              >
-                {cap.description}
-              </RevealText>
-              <ul className="flex flex-col" style={{ lineHeight: 0 }}>
-                {cap.items.map((item) => (
-                  <li
-                    key={item}
-                    style={{
-                      // borderBottom: "1px solid rgba(0,0,0,0.08)",
-                      padding: "0.15rem 0",
-                      lineHeight: 0.5,
-                      display: "inline",
-                    }}
-                  >
-                    <RevealText
-                      as="span"
-                      stagger={0.06}
-                      style={{
-                        fontSize: "var(--text-xs)",
-                        opacity: 0.9,
-                        lineHeight: 1.2,
-                      }}
-                    >
-                      {item}
-                    </RevealText>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          ))}
-        </div>
+      <section
+        style={{
+          fontSize: "var(--text-reg)",
+          lineHeight: 2,
+          letterSpacing: "0.02em",
+        }}
+      >
+        {draft.map((line, i) => (
+          <RedlineRow key={i} number={i + 1} {...line} />
+        ))}
       </section>
-      <DraggableImage
-        src="/data/structured/109.JPEG"
-        alt="Group Dynamics"
-        side="right"
-      />
+      {/* Desktop: pin the image's frame to the first viewport, where it sat
+          before the page got long. Mobile: the bottom of the page. The frame
+          is zero-width so it never blocks the text under it. */}
+      <div className="absolute right-0 bottom-0 w-0 md:top-0 md:bottom-auto md:h-screen">
+        <DraggableImage
+          src="/data/structured/109.JPEG"
+          alt="Group Dynamics"
+          side="right"
+        />
+      </div>
     </div>
   );
 }
